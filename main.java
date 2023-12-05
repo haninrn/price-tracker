@@ -5,3 +5,18 @@ public class main{
         System.out.println("Hye cantik cantik semua");
     }
 }
+
+/*
+ * gaesss reminder <3
+ * main branch - git pull to get latest changes in repository
+ * change to new branch
+ * make changes in new branch
+ * stage changes
+ * insert commit message
+ * commit
+ * push
+ * create pull request
+ * compare and merge
+ * go back to step 1
+ * 
+ */
