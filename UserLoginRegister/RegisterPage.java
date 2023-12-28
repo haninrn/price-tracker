@@ -1,7 +1,6 @@
 //Register Page is an extension of Login
 
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.*;
 import java.io.BufferedWriter;
 import java.io.FileWriter;
