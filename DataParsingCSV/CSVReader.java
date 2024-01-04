@@ -1,3 +1,4 @@
+package DataParsingCSV;
 import java.io.*;
 import java.time.LocalDate;
 import java.util.*;
@@ -23,6 +24,52 @@ public class CSVReader {
         }
 
         return lookupItems;
+    }
+    public List<LookupPremise> readLookupPremiseCSV(String filePath) {
+        List<LookupPremise> lookupPremises = new ArrayList<>();
+        String line;
+        String cvsSplitBy = ",";
+
+        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+            // Skip header
+            br.readLine();
+
+            while ((line = br.readLine()) != null) {
+                String[] data = line.split(cvsSplitBy);
+                LookupPremise premise = new LookupPremise(data[0], data[1], data[2], data[3], data[4], data[5]);
+                lookupPremises.add(premise);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return lookupPremises;
+    }
+
+    public List<PriceCatcher> readPriceCatcherCSV(String filePath) {
+        List<PriceCatcher> priceCatchers = new ArrayList<>();
+        String line;
+        String cvsSplitBy = ",";
+
+        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+            // Skip header
+            br.readLine();
+
+            while ((line = br.readLine()) != null) {
+                String[] data = line.split(cvsSplitBy);
+                LocalDate date = LocalDate.parse(data[0]); // Assuming the date is in ISO format (yyyy-MM-dd)
+                String premiseCode = data[1];
+                String itemCode = data[2];
+                double price = Double.parseDouble(data[3]);
+
+                PriceCatcher priceCatcher = new PriceCatcher(date, premiseCode, itemCode, price);
+                priceCatchers.add(priceCatcher);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return priceCatchers;
     }
 
     // Similar methods for reading LookupPremise and PriceCatcher CSV files
