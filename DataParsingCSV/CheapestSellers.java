@@ -6,9 +6,10 @@ import java.util.List;
 public class CheapestSellers {
 
     public static void main(String[] args) {
-        String lookupItemFilePath = "../lookup_item.csv";
-        String lookupPremiseFilePath = "../lookup_premise.csv";
-        String priceCatcherFilePath = "../pricecatcher.csv";
+        
+        String lookupItemFilePath = "lookup_item.csv";
+        String lookupPremiseFilePath = "lookup_premise.csv";
+        String priceCatcherFilePath = "pricecatcher.csv";
 
         CSVReader csvReader = new CSVReader();
         List<LookupItem> lookupItems = csvReader.readLookupItemCSV(lookupItemFilePath);
