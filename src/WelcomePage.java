@@ -39,7 +39,7 @@ public class WelcomePage implements ActionListener{
             if (itemSearchGUI == null) {
                 SwingUtilities.invokeLater(() -> new ItemSearchGUI());
             }
-            itemSearchGUI.setVisible(true);
+            // itemSearchGUI.setVisible(true);
         });
 
         // frame.add(searchField);
@@ -58,7 +58,10 @@ public class WelcomePage implements ActionListener{
 		
 		if(e.getSource()==nextButton) {
             // frame.getContentPane().removeAll();
-			SwingUtilities.invokeLater(() -> new RegisterPage());
+			if (itemSearchGUI == null) {
+                itemSearchGUI = new ItemSearchGUI();
+                itemSearchGUI.setVisible(true);
+            }
 		}
 	}
 
