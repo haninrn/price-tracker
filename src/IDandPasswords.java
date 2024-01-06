@@ -7,7 +7,7 @@ public class IDandPasswords {
 	
 	IDandPasswords(){ //use sql to get mutiple data
 		// Read data from a file and populate the HashMap
-        loadDataFromFile("user_data.txt"); 
+        loadDataFromFile("../user_data.txt"); 
 	}
 
 	private void loadDataFromFile(String fileName) {

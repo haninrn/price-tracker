@@ -1,5 +1,4 @@
 import java.util.*;
-import DataParsingCSV.*;
 
 public class Main {
 
@@ -12,7 +11,7 @@ public class Main {
 
         // Pass data to login page or further processing
         IDandPasswords idandPasswords = new IDandPasswords();
-        LoginPage loginPage = new LoginPage(idandPasswords.getLoginInfo(), lookupItems, lookupPremises, priceCatchers);
+        LoginPage loginPage = new LoginPage(idandPasswords.getLoginInfo());
 
     }
 }

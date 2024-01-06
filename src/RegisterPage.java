@@ -41,7 +41,6 @@ public class RegisterPage extends JFrame implements ActionListener {
 
         registerButton.setBounds(175, 250, 100, 25);
         registerButton.setFocusable(false);
-        registerButton.addActionListener(this);
 
         // Adding components to the panel
         frame.add(userIDLabel);
@@ -64,6 +63,7 @@ public class RegisterPage extends JFrame implements ActionListener {
     @Override
      public void actionPerformed(ActionEvent e) {
         if (e.getSource() == registerButton) {
+
             // Retrieve values from fields
             String userID = userIDField.getText();
             String email = emailField.getText();
@@ -71,7 +71,7 @@ public class RegisterPage extends JFrame implements ActionListener {
             String password = new String(passwordChars); // Convert char[] to String
 
             //Updates user_data
-            try (BufferedWriter writer = new BufferedWriter(new FileWriter("user_data.txt", true))) {
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter("../user_data.txt", true))) {
             writer.write(userID + "," + password);
             writer.newLine();
             } catch (IOException ex) {
