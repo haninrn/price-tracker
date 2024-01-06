@@ -38,12 +38,14 @@ public class ItemSearchGUI extends JFrame {
     // Implement fuzzy search logic here
     public void performSearch(String searchText) {
 
-        if(searchText == "test"){
+        if(searchText.equals("test")){
             System.out.println("FUNCTION WORK.");
-            JFrame frame = new JFrame();
-            JLabel text = new JLabel("Found!");
-            text.setText("found ");
-            frame.add(text);
+        JLabel text = new JLabel("Found!");
+        text.setText("Found");
+        getContentPane().removeAll();
+        add(text);
+        revalidate();
+        repaint();
         }
     }
 }
