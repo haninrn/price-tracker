@@ -71,6 +71,7 @@ public class LoginPage implements ActionListener {
     public void actionPerformed(ActionEvent e) {
 		
 		if(e.getSource()==registerButton) {
+            // frame.getContentPane().removeAll();
 			SwingUtilities.invokeLater(() -> new RegisterPage());
 		}
 		

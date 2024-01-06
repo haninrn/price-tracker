@@ -1,4 +1,3 @@
-package DataParsingCSV;
 
 import java.io.IOException;
 import java.time.LocalDate;
