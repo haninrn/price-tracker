@@ -4,9 +4,9 @@ import java.util.Map;
 public class ShoppingCart {
     private static Map<String, Integer> shoppingCart = new HashMap<>();
 
-    public static void addToCart(String product) {
-        shoppingCart.put(product, shoppingCart.getOrDefault(product, 0) + 1);
-        System.out.println("Product added to the shopping cart: " + product);
+    public static void addToCart(String selecteditem) {
+        shoppingCart.put(selecteditem, shoppingCart.getOrDefault(selecteditem, 0) + 1);
+        System.out.println("Product added to the shopping cart: " + selecteditem);
     }
 
     public static void viewShoppingCart() {
