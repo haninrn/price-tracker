@@ -47,23 +47,25 @@ public class ProductSearchApp {
         scanner.close();
     }
 
-    private static void ImportData(String fileName) {
+    public static void ImportData(String fileName) {
         try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
             String line;
+            System.out.println("data before import");
             while ((line = br.readLine()) != null) {
                 String[] parts = line.split(",");
                 String itemGroup = parts[0].trim();
                 String itemCategory = parts[1].trim();
                 String subCategory = parts[2].trim();
-
                 categories.computeIfAbsent(itemGroup, k -> new ArrayList<>()).add(itemCategory + " - " + subCategory);
             }
+                        System.out.println("data after import");
+
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    private static void displayMainMenu() {
+    public static void displayMainMenu() {
         System.out.println("Welcome to Product Search and Selection");
         System.out.println("1. Import Data");
         System.out.println("2. Browse by Categories");
@@ -73,7 +75,7 @@ public class ProductSearchApp {
         System.out.println("6. Exit");
     }
 
-    private static void browseByCategories(Scanner scanner) {
+    public static void browseByCategories(Scanner scanner) {
         int choice;
 
         do {
@@ -103,7 +105,7 @@ public class ProductSearchApp {
         } while (choice != categories.size() + 1);
     }
 
-    private static void displayCategories() {
+    public static void displayCategories() {
         int index = 1;
         //import category  from vsc file 
         System.out.println("Select a Category:");
@@ -114,7 +116,7 @@ public class ProductSearchApp {
         System.out.println(index + ". Back to Main Menu");
     }
 
-    private static void displaySubCategories(List<String> subCategories) {
+    public static void displaySubCategories(List<String> subCategories) {
         int index = 1;
         System.out.println("Select sub-category:");
         for (String subCategory : subCategories) {
