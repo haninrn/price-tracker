@@ -1,4 +1,3 @@
-
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -6,18 +5,7 @@ import java.util.List;
 
 public class AveragePrices {
 
-    public static void main(String[] args) {
-        String lookupItemFilePath = "lookup_item.csv";
-        String priceCatcherFilePath = "pricecatcher.csv";
-
-        CSVReader csvReader = new CSVReader();
-        List<LookupItem> lookupItems = csvReader.readLookupItemCSV(lookupItemFilePath);
-        List<PriceCatcher> priceCatchers = csvReader.readPriceCatcherCSV(priceCatcherFilePath);
-
-        calculateAveragePrices(lookupItems, priceCatchers);
-    }
-
-    private static void calculateAveragePrices(List<LookupItem> lookupItems, List<PriceCatcher> priceCatchers) {
+    public static void calculateAveragePrices(List<LookupItem> lookupItems, List<PriceCatcher> priceCatchers) {
         // lists to store total prices and counts for each date
         List<LocalDate> dates = new ArrayList<>();
         List<Double> totalPrices = new ArrayList<>();
@@ -29,7 +17,7 @@ public class AveragePrices {
             LocalDate date = priceCatcher.getDate();
             double price = priceCatcher.getPrice();
 
-            int index = dates.indexOf(date); //
+            int index = dates.indexOf(date);
             if (index == -1) {
                 // date not found in the list, add it (new date)
                 dates.add(date);
@@ -51,15 +39,15 @@ public class AveragePrices {
         for (int i = 0; i < dates.size(); i++) {
             LocalDate date = dates.get(i);
             double averagePrice = totalPrices.get(i) / sellerCounts.get(i);
-            
+
             // Use the itemCode from the current priceCatcher (find item by code)
             String itemCode = priceCatchers.get(i).getItemCode();
-            
+
             LookupItem item = findItemByCode(lookupItems, itemCode);
-            
-            System.out.printf("%02d | $%.2f\n", i + 1, averagePrice);
+
+            System.out.printf(" %02d  | $%.2f\n", i + 1, averagePrice);
         }
-        
+
     }
 
     private static LookupItem findItemByCode(List<LookupItem> lookupItems, String itemCode) {
