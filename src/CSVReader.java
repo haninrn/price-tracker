@@ -28,23 +28,49 @@ public class CSVReader {
         List<LookupPremise> lookupPremises = new ArrayList<>();
         String line;
         String cvsSplitBy = ",";
-
+        boolean inMultilineEntry = false;
+        StringBuilder multilineEntry = new StringBuilder();
+    
         try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
             // Skip header
             br.readLine();
-
+    
             while ((line = br.readLine()) != null) {
                 String[] data = line.split(cvsSplitBy);
-                LookupPremise premise = new LookupPremise(data[0], data[1], data[2], data[3], data[4], data[5]);
-                lookupPremises.add(premise);
+    
+                if (data.length >= 6) {
+                    if (inMultilineEntry) {
+                        multilineEntry.append(" ").append(data[2]);
+                        if (data[2].endsWith("\"")) {
+                            inMultilineEntry = false;
+                            data[2] = multilineEntry.toString();
+                            multilineEntry.setLength(0);  // Clear the StringBuilder
+                        } else {
+                            continue;  // Continue reading the next line for the multiline entry
+                        }
+                    }
+    
+                    if (data[2].startsWith("\"") && !data[2].endsWith("\"")) {
+                        // This line starts a multiline entry in the "address" column
+                        inMultilineEntry = true;
+                        multilineEntry.append(data[2]);
+                    } else {
+                        LookupPremise premise = new LookupPremise(data[0], data[1], data[2], data[3], data[4], data[5]);
+                        lookupPremises.add(premise);
+                    }
+                } else {
+                    System.err.println("Skipping line: " + line);
+                }
             }
         } catch (IOException e) {
             e.printStackTrace();
         }
-
+    
         return lookupPremises;
     }
-
+    
+    
+    
     public List<PriceCatcher> readPriceCatcherCSV(String filePath) {
         List<PriceCatcher> priceCatchers = new ArrayList<>();
         String line;
