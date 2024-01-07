@@ -22,7 +22,7 @@ public class AccountSettings {
     }
 
     public static void saveUserAccounts() {
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(user_data.txt))) {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter("../user_data.txt"))) {
             for (Map.Entry<String, String> entry : userAccounts.entrySet()) {
                 bw.write(entry.getKey() + "," + entry.getValue());
                 bw.newLine();
