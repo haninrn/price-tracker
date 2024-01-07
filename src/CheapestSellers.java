@@ -6,16 +6,18 @@ public class CheapestSellers {
 
     public static void main(String[] args) {
         
-        String lookupItemFilePath = "lookup_item.csv";
-        String lookupPremiseFilePath = "lookup_premise.csv";
-        String priceCatcherFilePath = "pricecatcher.csv";
+        String lookupItemFilePath = "../resources/lookup_item_clean.csv";
+        String lookupPremiseFilePath = "../resources/lookup_premise_clean.csv";
+        String priceCatcherFilePath = "../resources/pricecatcher_2023-08.csv";
 
         CSVReader csvReader = new CSVReader();
         List<LookupItem> lookupItems = csvReader.readLookupItemCSV(lookupItemFilePath);
         List<LookupPremise> lookupPremises = csvReader.readLookupPremiseCSV(lookupPremiseFilePath);
         List<PriceCatcher> priceCatchers = csvReader.readPriceCatcherCSV(priceCatcherFilePath);
 
+        System.out.println("successfully read.");
         findCheapestSellers(lookupItems, lookupPremises, priceCatchers);
+        System.out.println("successfully find cheapest.");
     }
 
     private static void findCheapestSellers(List<LookupItem> lookupItems, List<LookupPremise> lookupPremises, List<PriceCatcher> priceCatchers) {
