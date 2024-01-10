@@ -1,13 +1,7 @@
-import java.util.Scanner;
 import java.util.*;
 import java.io.*;
 
 public class ItemDetails{
-
-    /**
-     * @param args
-     */
-
     public static void main(String[] args) {
         String lookupItemFilePath = "resources/lookup_item_clean.csv";
         String lookupPremiseFilePath = "resources/lookup_premise_clean.csv";
@@ -20,6 +14,8 @@ public class ItemDetails{
 
         //assume selected item
         LookupItem selecteditem = findItemByName(lookupItems, "CILI AKAR HIJAU");
+
+        //Objects for each app
 
         if (selecteditem != null) {
             Scanner scanner = new Scanner(System.in);
@@ -53,7 +49,23 @@ public class ItemDetails{
                     averagePrices.calculateAveragePrices(lookupItems, priceCatchers);
                     break;
                 case 5:
-                    ShoppingCart.addToCart(selecteditem.getItem());
+                    ShoppingCart shoppingCart = new ShoppingCart();
+                    shoppingCart.addToCart(selecteditem.getItem());
+                    shoppingCart.displayInnerSCMenu();
+                    
+                    int choiceSCMenu = scanner.nextInt();
+
+                    while(choiceSCMenu!=1 && choiceSCMenu!=2){
+                        if (choiceSCMenu==1){
+
+                        } else if (choiceSCMenu==2) {
+
+                        } else {
+                            System.out.println("Invalid choice");
+                            shoppingCart.displayInnerSCMenu();
+                        }
+                    }
+
                     break;
                 case 6:
                     exit = true;
@@ -134,6 +146,10 @@ public class ItemDetails{
                 String[] parts = line.split(",");
                 if (parts.length >= 4) {
                     itemCodeMap.add(parts);
+
+                    // double premiseCode = Double.parseDouble(parts[1].trim());
+                    // parts[1] = String.valueOf(premiseCode); // Convert back to string if needed
+                    // itemCodeMap.add(parts);
                 }
             }
 
@@ -178,7 +194,7 @@ public class ItemDetails{
                     if (count >= 5) {
                         break;
                     }
-                    String premiseCode = price[1];
+                    String premiseCode = price[1].endsWith(".0") ? price[1] : price[1] + ".0";
                     String premiseAddress = findPremiseAddress(premiseCode, premiseDetailsList);
                     System.out.println(count + 1 + ". Retailer " + k + "\n" +                          
                             "   Premise Code: " + premiseCode + "\n" +
@@ -189,6 +205,8 @@ public class ItemDetails{
                     k++;
                     count++;
                 }
+                
+                
             }
 
         } catch (IOException | NumberFormatException e) {
@@ -208,7 +226,7 @@ public class ItemDetails{
     private static String findPremiseAddress(String premiseCode, List<String[]> premiseDetailsList) {
         for (String[] details : premiseDetailsList) {
             if (premiseCode.equals(details[0])) {
-                return details[2] + ", " + details[3] + ", " + details[5];
+                return details[1]+ ", " + details[2] + ", " + details[3] + ", " + details[4] + ", " + details[5];
             }
         }
         return "Address not found";

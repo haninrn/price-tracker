@@ -31,7 +31,15 @@ public class ProductSearchApp {
                     SearchForProduct.searchForProduct(scanner);
                     break;
                 case 4:
-                    ShoppingCart.viewShoppingCart();
+                    ShoppingCart shoppingCart = new ShoppingCart();
+                    shoppingCart.viewShoppingCart();
+                    shoppingCart.displayInnerSCMenu();
+
+                    int choiceSC = scanner.nextInt();
+                    if(choiceSC==1){
+                        
+                    }
+
                     break;
                 case 5:
                     AccountSettings.displayAccountSettings(scanner);
@@ -125,4 +133,5 @@ public class ProductSearchApp {
         }
         System.out.println(index + ". Back to Menu");
     }
+
 }
