@@ -116,39 +116,65 @@ public class ItemSearchGUI extends JFrame {
         String userChoiceText = choiceTextField.getText();
         try {
             int userChoice = Integer.parseInt(userChoiceText);
+            System.out.println("test");
             // Process the user choice as needed
             // Call the logic from SearchForProduct to handle the chosen product
             processUserChoice(userChoice);
         } catch (NumberFormatException e) {
             // Handle the case where the input is not a valid integer
-            JOptionPane.showMessageDialog(this, "Invalid choice. Please enter a number.");
+            // JOptionPane.showMessageDialog(this, "Invalid choice. Please enter a number.");
         }
     }
 
     // Method to process the user choice
-    private void processUserChoice(int userChoice) {
-        // Get the selected product based on userChoice
-        List<String> foundProducts = new ArrayList<>();
-        for (List<String> subCategories : categories.values()) {
-            for (String subCategory : subCategories) {
-                foundProducts.add(subCategory);
-            }
-        }
+    // private void processUserChoice(int userChoice) {
+    //     // Get the selected product based on userChoice
+    //     List<String> foundProducts = new ArrayList<>();
+    //     for (List<String> subCategories : categories.values()) {
+    //         for (String subCategory : subCategories) {
+    //             foundProducts.add(subCategory);
+    //         }
+    //     }
 
-        if (userChoice >= 1 && userChoice <= foundProducts.size()) {
-            String chosenProduct = foundProducts.get(userChoice - 1);
-            // Display the chosen product in the actionsTextArea
-            actionsTextArea.setText("Selected " + chosenProduct + ".\n\nSelect actions:\n" +
-                    "1. View item details\n" +
-                    "2. Modify item details\n" +
-                    "3. View top 5 cheapest seller\n" +
-                    "4. View price trend\n" +
-                    "5. Add to shopping cart");
-        } else {
-            // Display an error message if the user choice is invalid
-            actionsTextArea.setText("Invalid choice. Please try again.");
-        }
+    //     if (userChoice >= 1 && userChoice <= foundProducts.size()) {
+    //         String chosenProduct = foundProducts.get(userChoice - 1);
+    //         // Display the chosen product in the actionsTextArea
+    //         actionsTextArea.setText("Selected " + chosenProduct + ".\n\nSelect actions:\n" +
+    //                 "1. View item details\n" +
+    //                 "2. Modify item details\n" +
+    //                 "3. View top 5 cheapest seller\n" +
+    //                 "4. View price trend\n" +
+    //                 "5. Add to shopping cart");
+    //     } else {
+    //         // Display an error message if the user choice is invalid
+    //         actionsTextArea.setText("Invalid choice. Please try again.");
+    //     }
+    // }
+    // Method to process the user choice
+private void processUserChoice(int userChoice) {
+    // Get the selected product based on userChoice from the search results
+    List<String> foundProducts = new ArrayList<>(resultTextArea.getLineCount());
+    Scanner scanner = new Scanner(resultTextArea.getText());
+
+    while (scanner.hasNextLine()) {
+        foundProducts.add(scanner.nextLine());
     }
+
+    if (userChoice >= 1 && userChoice <= foundProducts.size()) {
+        String chosenProduct = foundProducts.get(userChoice + 1);
+        // Display the chosen product in the actionsTextArea
+        actionsTextArea.setText("Selected " + chosenProduct + ".\n\nSelect actions:\n" +
+                "1. View item details\n" +
+                "2. Modify item details\n" +
+                "3. View top 5 cheapest seller\n" +
+                "4. View price trend\n" +
+                "5. Add to shopping cart");
+    } else {
+        // Display an error message if the user choice is invalid
+        actionsTextArea.setText("Invalid choice. Please try again.");
+    }
+}
+
 
 
 
