@@ -1,8 +1,10 @@
 import java.util.*;
 import java.io.*;
 
-public class ItemDetails{
-    public static void main(String[] args) {
+public class ItemDetails {
+    private Map<String, Integer> shoppingCart = new HashMap<>();
+
+    public static void itemDetailsMainMenu() {
         String lookupItemFilePath = "resources/lookup_item_clean.csv";
         String lookupPremiseFilePath = "resources/lookup_premise_clean.csv";
         String priceCatcherFilePath = "resources/pricecatcher_2023-08.csv";
@@ -64,8 +66,7 @@ public class ItemDetails{
                             System.out.println("Invalid choice");
                             shoppingCart.displayInnerSCMenu();
                         }
-                    }
-
+                    }     
                     break;
                 case 6:
                     exit = true;
@@ -75,9 +76,12 @@ public class ItemDetails{
                     break;
             }
         }
+        scanner.close();
         } else {
             System.out.println("Selected item not found.");
         }
+
+        
     }
 
     private static void viewItemDetails(LookupItem item) {
@@ -133,86 +137,150 @@ public class ItemDetails{
         findCheapestPrices(itemName,itemsFilePath,pricesFilePath,premiseFilePath);
     }
 
-    public static void findCheapestPrices(String itemName, String itemsFilePath, String pricesFilePath, String premiseFilePath) {
-        List<String[]> cheapestPrices = new ArrayList<>();
+    // public static void findCheapestPrices(String itemName, String itemsFilePath, String pricesFilePath, String premiseFilePath) {
+    //     List<String[]> cheapestPrices = new ArrayList<>();
 
+    //     try (BufferedReader brItems = new BufferedReader(new FileReader(itemsFilePath));
+    //          BufferedReader brPremise = new BufferedReader(new FileReader(premiseFilePath));
+    //          BufferedReader brPrices = new BufferedReader(new FileReader(pricesFilePath))) {
+
+    //         String line;
+    //         List<String[]> itemCodeMap = new ArrayList<>();
+    //         while ((line = brItems.readLine()) != null) {
+    //             String[] parts = line.split(",");
+    //             if (parts.length >= 4) {
+    //                 itemCodeMap.add(parts);
+
+    //                 // double premiseCode = Double.parseDouble(parts[1].trim());
+    //                 // parts[1] = String.valueOf(premiseCode); // Convert back to string if needed
+    //                 // itemCodeMap.add(parts);
+    //             }
+    //         }
+
+    //         List<String[]> premiseDetailsList = new ArrayList<>();
+    //         while ((line = brPremise.readLine()) != null) {
+    //             String[] parts = line.split(",");
+    //             if (parts.length >= 6) {
+    //                 premiseDetailsList.add(parts);
+    //             }
+    //         }
+    //         List<String[]> priceList = new ArrayList<>();
+    //         while ((line = brPrices.readLine()) != null) {
+    //             String[] parts = line.split(",");
+    //             if (parts.length >= 4) {
+    //                 priceList.add(parts);
+    //             }
+    //         }
+    //         for (String[] price : priceList) {
+    //             String itemCode = price[2].trim();
+    //             for (String[] item : itemCodeMap) {
+    //                 if (itemName.equals(item[1].trim()) && itemCode.equals(item[0].trim())) {
+    //                     if (!containsPrice(cheapestPrices, price[3])) {
+    //                         cheapestPrices.add(price);
+    //                     }
+    //                 }
+    //             }
+    //         }
+
+    //         cheapestPrices.sort(Comparator.comparingDouble(a -> Double.parseDouble(a[3])));
+
+    //         if (cheapestPrices.isEmpty()) {
+    //             System.out.println("No prices found for the item.");
+    //         } else {
+    //             // Retrieve itemunit based on the first item found in cheapestPrices
+    //             String firstItemCode = cheapestPrices.get(0)[2];
+    //             String itemUnit = getItemUnit(firstItemCode, itemCodeMap);
+
+    //             System.out.println("Top 5 Cheapest Sellers for " + itemName + " (" + itemUnit + ")\n");
+    //             int count = 0;
+    //             char k = 'A';
+    //             for (String[] price : cheapestPrices) {
+    //                 if (count >= 5) {
+    //                     break;
+    //                 }
+    //                 String premiseCode = price[1].endsWith(".0") ? price[1] : price[1] + ".0";
+    //                 String premiseAddress = findPremiseAddress(premiseCode, premiseDetailsList);
+    //                 System.out.println(count + 1 + ". Retailer " + k + "\n" +                          
+    //                         "   Premise Code: " + premiseCode + "\n" +
+    //                         "   Price: RM" + price[3] + "\n" +
+    //                         "   Address: " + premiseAddress
+    //                 );
+    //                 System.out.println();
+    //                 k++;
+    //                 count++;
+    //             }
+                
+                
+    //         }
+
+    //     } catch (IOException | NumberFormatException e) {
+    //         e.printStackTrace();
+    //     }
+    // }
+
+    public static List<String[]> findCheapestPrices(String itemName, String itemsFilePath, String pricesFilePath, String premiseFilePath) {
+        List<String[]> cheapestPrices = new ArrayList<>();
+    
         try (BufferedReader brItems = new BufferedReader(new FileReader(itemsFilePath));
              BufferedReader brPremise = new BufferedReader(new FileReader(premiseFilePath));
              BufferedReader brPrices = new BufferedReader(new FileReader(pricesFilePath))) {
-
-            String line;
-            List<String[]> itemCodeMap = new ArrayList<>();
-            while ((line = brItems.readLine()) != null) {
-                String[] parts = line.split(",");
-                if (parts.length >= 4) {
-                    itemCodeMap.add(parts);
-
-                    // double premiseCode = Double.parseDouble(parts[1].trim());
-                    // parts[1] = String.valueOf(premiseCode); // Convert back to string if needed
-                    // itemCodeMap.add(parts);
-                }
-            }
-
-            List<String[]> premiseDetailsList = new ArrayList<>();
-            while ((line = brPremise.readLine()) != null) {
-                String[] parts = line.split(",");
-                if (parts.length >= 6) {
-                    premiseDetailsList.add(parts);
-                }
-            }
-            List<String[]> priceList = new ArrayList<>();
-            while ((line = brPrices.readLine()) != null) {
-                String[] parts = line.split(",");
-                if (parts.length >= 4) {
-                    priceList.add(parts);
-                }
-            }
-            for (String[] price : priceList) {
-                String itemCode = price[2].trim();
-                for (String[] item : itemCodeMap) {
-                    if (itemName.equals(item[1].trim()) && itemCode.equals(item[0].trim())) {
-                        if (!containsPrice(cheapestPrices, price[3])) {
-                            cheapestPrices.add(price);
+    
+                    String line;
+                    List<String[]> itemCodeMap = new ArrayList<>();
+                    while ((line = brItems.readLine()) != null) {
+                        String[] parts = line.split(",");
+                        if (parts.length >= 4) {
+                            itemCodeMap.add(parts);
+        
+                            // double premiseCode = Double.parseDouble(parts[1].trim());
+                            // parts[1] = String.valueOf(premiseCode); // Convert back to string if needed
+                            // itemCodeMap.add(parts);
                         }
                     }
-                }
-            }
-
-            cheapestPrices.sort(Comparator.comparingDouble(a -> Double.parseDouble(a[3])));
-
-            if (cheapestPrices.isEmpty()) {
-                System.out.println("No prices found for the item.");
-            } else {
-                // Retrieve itemunit based on the first item found in cheapestPrices
-                String firstItemCode = cheapestPrices.get(0)[2];
-                String itemUnit = getItemUnit(firstItemCode, itemCodeMap);
-
-                System.out.println("Top 5 Cheapest Sellers for " + itemName + " (" + itemUnit + ")\n");
-                int count = 0;
-                char k = 'A';
-                for (String[] price : cheapestPrices) {
-                    if (count >= 5) {
-                        break;
+        
+                    List<String[]> premiseDetailsList = new ArrayList<>();
+                    while ((line = brPremise.readLine()) != null) {
+                        String[] parts = line.split(",");
+                        if (parts.length >= 6) {
+                            premiseDetailsList.add(parts);
+                        }
                     }
-                    String premiseCode = price[1].endsWith(".0") ? price[1] : price[1] + ".0";
-                    String premiseAddress = findPremiseAddress(premiseCode, premiseDetailsList);
-                    System.out.println(count + 1 + ". Retailer " + k + "\n" +                          
-                            "   Premise Code: " + premiseCode + "\n" +
-                            "   Price: RM" + price[3] + "\n" +
-                            "   Address: " + premiseAddress
-                    );
-                    System.out.println();
-                    k++;
-                    count++;
-                }
-                
-                
+                    List<String[]> priceList = new ArrayList<>();
+                    while ((line = brPrices.readLine()) != null) {
+                        String[] parts = line.split(",");
+                        if (parts.length >= 4) {
+                            priceList.add(parts);
+                        }
+                    }
+                    for (String[] price : priceList) {
+                        String itemCode = price[2].trim();
+                        for (String[] item : itemCodeMap) {
+                            if (itemName.equals(item[1].trim()) && itemCode.equals(item[0].trim())) {
+                                if (!containsPrice(cheapestPrices, price[3])) {
+                                    cheapestPrices.add(price);
+                                }
+                            }
+                        }
+                    }
+                    if (cheapestPrices.isEmpty()) {
+                        System.out.println("No prices found for the item.");
+                    } else {
+                        // Retrieve itemunit based on the first item found in cheapestPrices
+                        String firstItemCode = cheapestPrices.get(0)[2];
+                        String itemUnit = getItemUnit(firstItemCode, itemCodeMap);
+                    }
+                return cheapestPrices;
+        
+            } catch (IOException | NumberFormatException e) {
+                e.printStackTrace();
             }
-
-        } catch (IOException | NumberFormatException e) {
-            e.printStackTrace();
+        
+            // In case of an exception, return an empty list
+            return Collections.emptyList();
         }
-    }
+    
+    
+
 
     private static boolean containsPrice(List<String[]> cheapestPrices, String priceToCheck) {
         for (String[] price : cheapestPrices) {
@@ -240,5 +308,62 @@ public class ItemDetails{
         }
         return "Unit not found";
     }
+
+    void viewCheapestSellerForItem(String itemName, int quantity) {
+        String itemsFilePath = "resources/lookup_item_clean.csv";
+        String premiseFilePath = "resources/lookup_premise_clean.csv";
+        String pricesFilePath = "resources/pricecatcher_2023-08.csv";
+    
+        List<String[]> cheapestPrices = findCheapestPrices(itemName, itemsFilePath, pricesFilePath, premiseFilePath);
+    
+        List<String[]> itemCodeMap;
+    
+        if (cheapestPrices.isEmpty()) {
+            System.out.println("No prices found for the item.");
+        } else {
+            String firstItemCode = cheapestPrices.get(0)[2];
+            String itemUnit = getItemUnit(firstItemCode, itemCodeMap);
+    
+            int count = 0;
+            char k = 'A';
+    
+            for (String[] price : cheapestPrices) {
+                if (count >= 1) {
+                    break;
+                }
+    
+                String premiseCode = price[1].endsWith(".0") ? price[1] : price[1] + ".0";
+
+                String premiseAddress = findPremiseAddress(premiseCode, premiseDetailsList);
+    
+                System.out.println(
+                        "Retailer " + k + "\n" +
+                                "   Premise Code: " + premiseCode + "\n" +
+                                "   Price: RM" + price[3] + "\n" +
+                                "   Address: " + premiseAddress
+                );
+    
+                k++;
+                count++;
+            }
+        }
+    }
+    
+    public void viewCheapestSellers() {
+        ShoppingCart cart = new ShoppingCart();
+
+        for (Map.Entry<String, Integer> entry : cart.entrySet()) {
+            String itemName = entry.getKey();
+            int quantity = entry.getValue();
+
+            System.out.println("Cheapest Seller for " + itemName + " (Quantity: " + quantity + "):");
+            viewCheapestSellerForItem(itemName, quantity);
+            System.out.println();  // Add a separator between items for better readability
+        }
+
+        System.out.println("Cheapest Seller for the entire cart:");
+        cart.viewCheapestSellerForCart();
+    }
+    
 }
 

@@ -69,66 +69,20 @@ public class ShoppingCart {
         }
     }
     
-    public void viewCheapestSellers() {
-        for (Map.Entry<String, Integer> entry : shoppingCart.entrySet()) {
-            String itemName = entry.getKey();
-            int quantity = entry.getValue();
-
-            System.out.println("Cheapest Seller for " + itemName + " (Quantity: " + quantity + "):");
-            viewCheapestSellerForItem(itemName, quantity);
-            System.out.println();  // Add a separator between items for better readability
-        }
-
-        System.out.println("Cheapest Seller for the entire cart:");
-        viewCheapestSellerForCart();
-    }
-
-    private void viewCheapestSellerForItem(String itemName, int quantity) {
-        String itemsFilePath = "resources/lookup_item_clean.csv";
-        String premiseFilePath="resources/lookup_premise_clean.csv";
-        String pricesFilePath="resources/pricecatcher_2023-08.csv";
-
-        List<String[]> cheapestPrices = findCheapestPrices(itemName, itemsFilePath, pricesFilePath, premiseFilePath);
-
-        if (cheapestPrices.isEmpty()) {
-            System.out.println("No prices found for the item.");
-        } else {
-            String firstItemCode = cheapestPrices.get(0)[2];
-            String itemUnit = getItemUnit(firstItemCode, itemCodeMap);
-
-            int count = 0;
-            char k = 'A';
-            for (String[] price : cheapestPrices) {
-                if (count >= 1) {  // Display only the cheapest seller
-                    break;
-                }
-
-                String premiseCode = price[1].endsWith(".0") ? price[1] : price[1] + ".0";
-                String premiseAddress = findPremiseAddress(premiseCode, premiseDetailsList);
-
-                System.out.println(
-                        "Retailer " + k + "\n" +
-                                "   Premise Code: " + premiseCode + "\n" +
-                                "   Price: RM" + price[3] + "\n" +
-                                "   Address: " + premiseAddress
-                );
-
-                k++;
-                count++;
-            }
-        }
-    }
-
-    private void viewCheapestSellerForCart() {
+    public void viewCheapestSellerForCart() {
         double totalCost = 0.0;
 
+        ItemDetails itemDetailsVCSFC = new ItemDetails();
+
         for (Map.Entry<String, Integer> entry : shoppingCart.entrySet()) {
             String itemName = entry.getKey();
             int quantity = entry.getValue();
 
-            
+            String itemsFilePath = "resources/lookup_item_clean.csv";
+            String premiseFilePath="resources/lookup_premise_clean.csv";
+            String pricesFilePath="resources/pricecatcher_2023-08.csv";
 
-            List<String[]> cheapestPrices = findCheapestPrices(itemName, itemsFilePath, pricesFilePath, premiseFilePath);
+            List<String[]> cheapestPrices = itemDetailsVCSFC.findCheapestPrices(itemName, itemsFilePath, pricesFilePath, premiseFilePath); //findCheapestPrices - in ItemDetails.java
             if (!cheapestPrices.isEmpty()) {
                 // Assuming the cheapest seller is the first one in the list
                 String cheapestPrice = cheapestPrices.get(0)[3];
@@ -142,5 +96,9 @@ public class ShoppingCart {
         } else {
             System.out.println("No prices found for the entire cart.");
         }
+
     }
+
+    
+
 }
