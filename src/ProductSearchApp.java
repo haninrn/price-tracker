@@ -11,6 +11,8 @@ public class ProductSearchApp {
     private static Map<String, List<String>> categories = new HashMap<>();
 
     public static void main(String[] args) {
+        CSVReader csvReader = new CSVReader();
+        List<LookupItem> lookupItems = csvReader.readLookupItemCSV("C:\\Users\\HP\\Assignment\\price-tracker\\resources\\lookup_item_clean.csv");
 
         Scanner scanner = new Scanner(System.in);
         int choice;
@@ -22,12 +24,18 @@ public class ProductSearchApp {
 
             switch (choice) {
                 case 1:
-                    ImportData("../resources/lookup_item_clean.csv");
+                    ImportData("resources/lookup_item_clean.csv");
+                    break;
                 case 2:
-                    browseByCategories(scanner);
+                    String csvFilePath = "C:\\Users\\HP\\Assignment\\price-tracker\\resources\\lookup_item_clean.csv";
+                    ItemManager itemManager = new ItemManager(csvFilePath);
+
+                    runItemManager(itemManager);
+                    System.out.println("Program exited.");
+
                     break;
                 case 3:
-                    SearchForProduct.setSearchData(categories);
+                    SearchForProduct.searchForProduct(scanner);
                     SearchForProduct.searchForProduct(scanner);
                     break;
                 case 4:
@@ -37,9 +45,7 @@ public class ProductSearchApp {
 
                     int choiceSC = scanner.nextInt();
                     if(choiceSC==1){
-                        
                     }
-
                     break;
                 case 5:
                     AccountSettings.displayAccountSettings(scanner);
@@ -52,7 +58,7 @@ public class ProductSearchApp {
             }
         } while (choice != 6);
 
-        scanner.close();
+        //scanner.close();
     }
 
     public static void ImportData(String fileName) {
@@ -83,55 +89,32 @@ public class ProductSearchApp {
         System.out.println("6. Exit");
     }
 
-    public static void browseByCategories(Scanner scanner) {
-        int choice;
+    private static void runItemManager(ItemManager itemManager) {
+        Scanner scanner = new Scanner(System.in);
 
-        do {
-            displayCategories();
-            System.out.print("Enter your choice: ");
-            choice = scanner.nextInt();
+        while (true) {
+            // Display item groups
+            System.out.println("Select a category");
+            itemManager.displayItemGroups();
 
-            if (choice >= 1 && choice <= categories.size()) {
-                List<String> subCategories = new ArrayList<>(categories.values()).get(choice - 1);
+            // Get user input for selecting item group
+            System.out.print("Enter your choice (or enter 'exit' to quit): ");
+            String selectedGroup = scanner.nextLine();
 
-                do {
-                    displaySubCategories(subCategories);
-                    System.out.print("Enter your choice: ");
-                    choice = scanner.nextInt();
-
-                    if (choice >= 1 && choice <= subCategories.size()) {
-                        System.out.println("You have selected '" + subCategories.get(choice - 1) + "'.");
-                        // Now you can further browse or search for specific items
-                        // Implement your logic here
-                    } else if (choice != subCategories.size() + 1) {
-                        System.out.println("Invalid choice. Please try again.");
-                    }
-                } while (choice != subCategories.size() + 1);
-            } else if (choice != categories.size() + 1) {
-                System.out.println("Invalid choice. Please try again.");
+            if ("exit".equalsIgnoreCase(selectedGroup)) {
+                break; // Exit the loop if the user enters 'exit'
             }
-        } while (choice != categories.size() + 1);
-    }
 
-    public static void displayCategories() {
-        int index = 1;
-        //import category  from vsc file 
-        System.out.println("Select a Category:");
-        for (String itemGroup : categories.keySet()) {
-            System.out.println(index + ". " + itemGroup);
-            index++;
+            // Display item categories for the selected group
+            itemManager.displayItemCategories(selectedGroup);
+
+            // Get user input for selecting item category
+            System.out.print("Select subcategory: ");
+            String selectedItemCategory = scanner.nextLine();
+
+            // Process the selected item category
+            itemManager.displayItemCategories(selectedItemCategory);
         }
-        System.out.println(index + ". Back to Main Menu");
+        scanner.close();
     }
-
-    public static void displaySubCategories(List<String> subCategories) {
-        int index = 1;
-        System.out.println("Select sub-category:");
-        for (String subCategory : subCategories) {
-            System.out.println(index + ". " + subCategory);
-            index++;
-        }
-        System.out.println(index + ". Back to Menu");
-    }
-
 }
