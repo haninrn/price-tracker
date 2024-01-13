@@ -32,11 +32,12 @@ public class WelcomePage implements ActionListener {
     }
 
     @Override
-    public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == nextButton) {
-            showMenuOptions();
-        }
+public void actionPerformed(ActionEvent e) {
+    if (e.getSource() == nextButton) {
+        frame.dispose();
+        showMenuOptions();
     }
+}
 
     private void showMenuOptions() {
         String[] options = { "Import Data", "Browse by Categories", "Search for a Product", "View Shopping Cart",

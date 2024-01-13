@@ -125,7 +125,7 @@ public class ItemSearchGUI extends JFrame {
             // JOptionPane.showMessageDialog(this, "Invalid choice. Please enter a number.");
         }
     }
-
+///////////////////////////////////////////////
     // Method to process the user choice
     // private void processUserChoice(int userChoice) {
     //     // Get the selected product based on userChoice
@@ -150,30 +150,76 @@ public class ItemSearchGUI extends JFrame {
     //         actionsTextArea.setText("Invalid choice. Please try again.");
     //     }
     // }
+    ////////////////////////////////////////////////////
     // Method to process the user choice
-private void processUserChoice(int userChoice) {
-    // Get the selected product based on userChoice from the search results
-    List<String> foundProducts = new ArrayList<>(resultTextArea.getLineCount());
-    Scanner scanner = new Scanner(resultTextArea.getText());
+// private void processUserChoice(int userChoice) {
+//     // Get the selected product based on userChoice from the search results
+//     List<String> foundProducts = new ArrayList<>(resultTextArea.getLineCount());
+//     Scanner scanner = new Scanner(resultTextArea.getText());
 
-    while (scanner.hasNextLine()) {
-        foundProducts.add(scanner.nextLine());
-    }
+//     while (scanner.hasNextLine()) {
+//         foundProducts.add(scanner.nextLine());
+//     }
 
-    if (userChoice >= 1 && userChoice <= foundProducts.size()) {
-        String chosenProduct = foundProducts.get(userChoice + 1);
-        // Display the chosen product in the actionsTextArea
-        actionsTextArea.setText("Selected " + chosenProduct + ".\n\nSelect actions:\n" +
-                "1. View item details\n" +
-                "2. Modify item details\n" +
-                "3. View top 5 cheapest seller\n" +
-                "4. View price trend\n" +
-                "5. Add to shopping cart");
-    } else {
-        // Display an error message if the user choice is invalid
-        actionsTextArea.setText("Invalid choice. Please try again.");
+    // if (userChoice >= 1 && userChoice <= foundProducts.size()) {
+    //     String chosenProduct = foundProducts.get(userChoice + 1);
+    //     // Display the chosen product in the actionsTextArea
+    //     actionsTextArea.setText("Selected " + chosenProduct + ".\n\nSelect actions:\n" +
+    //             "1. View item details\n" +
+    //             "2. Modify item details\n" +
+    //             "3. View top 5 cheapest seller\n" +
+    //             "4. View price trend\n" +
+    //             "5. Add to shopping cart");
+    // } else {
+    //     // Display an error message if the user choice is invalid
+    //     actionsTextArea.setText("Invalid choice. Please try again.");
+    // }
+    //////////////////////////////////////////////////
+    private void processUserChoice(int userChoice) {
+        // Get the selected product based on userChoice from the search results
+        List<String> foundProducts = new ArrayList<>(resultTextArea.getLineCount());
+        Scanner scanner = new Scanner(resultTextArea.getText());
+    
+        while (scanner.hasNextLine()) {
+            foundProducts.add(scanner.nextLine());
+        }
+    
+        if (userChoice >= 1 && userChoice <= foundProducts.size()) {
+            String chosenProduct = foundProducts.get(userChoice + 1);
+    
+            // Clear existing buttons before adding new ones
+            actionsTextArea.removeAll();
+    
+            // Display the chosen product in the actionsTextArea
+            actionsTextArea.setText("Selected " + chosenProduct + ".\n\nSelect action:");
+    
+            // Create buttons for different actions
+            JButton viewDetailsButton = new JButton("1. View item details");
+            JButton modifyDetailsButton = new JButton("2. Modify item details");
+            JButton viewCheapestSellerButton = new JButton("3. View top 5 cheapest seller");
+            JButton viewPriceTrendButton = new JButton("4. View price trend");
+            JButton addToCartButton = new JButton("5. Add to shopping cart");
+    
+            // Add action listeners to the buttons
+            // viewDetailsButton.addActionListener(e -> performAction(1, chosenProduct));
+            // modifyDetailsButton.addActionListener(e -> performAction(2, chosenProduct));
+            // viewCheapestSellerButton.addActionListener(e -> performAction(3, chosenProduct));
+            // viewPriceTrendButton.addActionListener(e -> performAction(4, chosenProduct));
+            // addToCartButton.addActionListener(e -> performAction(5, chosenProduct));
+    
+            // Add buttons to the actionsTextArea
+            actionsTextArea.add(viewDetailsButton);
+            actionsTextArea.add(modifyDetailsButton);
+            actionsTextArea.add(viewCheapestSellerButton);
+            actionsTextArea.add(viewPriceTrendButton);
+            actionsTextArea.add(addToCartButton);
+        } else {
+            // Display an error message if the user choice is invalid
+            actionsTextArea.setText("Invalid choice. Please try again.");
+        }
     }
-}
+    
+
 
 
 
