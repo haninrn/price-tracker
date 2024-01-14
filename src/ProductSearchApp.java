@@ -8,11 +8,15 @@ import java.util.Map;
 import java.util.Scanner;
 
 public class ProductSearchApp {
-    private static Map<String, List<String>> categories = new HashMap<>();
+    private Map<String, List<String>> categories;
 
-    public static void main(String[] args) {
+    public ProductSearchApp() {
+        this.categories = new HashMap<>();
+    }
+
+    public void runProductSearchApp() {
         CSVReader csvReader = new CSVReader();
-        List<LookupItem> lookupItems = csvReader.readLookupItemCSV("C:\\Users\\HP\\Assignment\\price-tracker\\resources\\lookup_item_clean.csv");
+        List<LookupItem> lookupItems = csvReader.readLookupItemCSV("resources\\lookup_item_clean.csv");
 
         Scanner scanner = new Scanner(System.in);
         int choice;
@@ -27,7 +31,7 @@ public class ProductSearchApp {
                     ImportData("resources/lookup_item_clean.csv");
                     break;
                 case 2:
-                    String csvFilePath = "C:\\Users\\HP\\Assignment\\price-tracker\\resources\\lookup_item_clean.csv";
+                    String csvFilePath = "resources\\lookup_item_clean.csv";
                     ItemManager itemManager = new ItemManager(csvFilePath);
 
                     runItemManager(itemManager);
@@ -62,7 +66,7 @@ public class ProductSearchApp {
         //scanner.close();
     }
 
-    public static void ImportData(String fileName) {
+    public void ImportData(String fileName) {
         try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
             String line;
             System.out.println("data before import");
@@ -80,7 +84,7 @@ public class ProductSearchApp {
         }
     }
 
-    public static void displayMainMenu() {
+    public void displayMainMenu() {
         System.out.println("Welcome to Product Search and Selection");
         System.out.println("1. Import Data");
         System.out.println("2. Browse by Categories");
@@ -90,7 +94,7 @@ public class ProductSearchApp {
         System.out.println("6. Exit");
     }
 
-    private static void runItemManager(ItemManager itemManager) {
+    private void runItemManager(ItemManager itemManager) {
         Scanner scanner = new Scanner(System.in);
 
         while (true) {
