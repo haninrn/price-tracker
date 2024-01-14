@@ -1,93 +1,145 @@
 import java.io.*;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.Scanner;
 
 public class AccountSettings {
-    private static Map<String, String> userAccounts = new HashMap<>();
-    private static final String DATA_FILE = "user_data.txt";
 
-    public static void loadUserAccounts() {
-        try (BufferedReader buffer = new BufferedReader(new FileReader(DATA_FILE))) {
-            String line;
-            while ((line = buffer.readLine()) != null) {
-                String[] parts = line.split(",");
-                String username = parts[0].trim();
-                String password = parts[1].trim();
-                userAccounts.put(username, password);
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+    public void runAccountSettings() {
+        Scanner scanner = new Scanner(System.in);
 
-    public static void saveUserAccounts() {
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter("../user_data.txt"))) {
-            for (Map.Entry<String, String> entry : userAccounts.entrySet()) {
-                bw.write(entry.getKey() + "," + entry.getValue());
-                bw.newLine();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+        while (true) {
+            System.out.println("==== Main Menu ====");
+            System.out.println("1. Login");
+            System.out.println("2. Exit");
+            System.out.print("Enter your choice: ");
 
-    public static void changePassword(String username, String newPassword) {
-        if (userAccounts.containsKey(username)) {
-            userAccounts.put(username, newPassword);
-            saveUserAccounts();
-            System.out.println("Password changed successfully.");
-        } else {
-            System.out.println("Username not found. Please try again.");
-        }
-    }
+            int mainChoice = scanner.nextInt();
+            scanner.nextLine();  // Consume the newline character
 
-    public static void changeUsername(String currentUsername, String newUsername) {
-        if (userAccounts.containsKey(currentUsername)) {
-            String password = userAccounts.remove(currentUsername);
-            userAccounts.put(newUsername, password);
-            saveUserAccounts();
-            System.out.println("Username changed successfully.");
-        } else {
-            System.out.println("Username not found. Please try again.");
-        }
-    }
-
-    public static void displayAccountSettings(Scanner scanner) {
-        System.out.print("Enter your current username: ");
-        String currentUsername = scanner.next();
-
-        System.out.print("Enter your current password: ");
-        String currentPassword = scanner.next();
-
-        if (userAccounts.containsKey(currentUsername) && userAccounts.get(currentUsername).equals(currentPassword)) {
-            System.out.println("Account Settings:");
-            System.out.println("1. Change Password");
-            System.out.println("2. Change Username");
-            System.out.println("3. Back to Main Menu");
-
-            System.out.print("Enter your choice (1/2/3): ");
-            int choice = scanner.nextInt();
-
-            switch (choice) {
+            switch (mainChoice) {
                 case 1:
-                    System.out.print("Enter your new password: ");
-                    String newPassword = scanner.next();
-                    changePassword(currentUsername, newPassword);
+                    authenticateUser(scanner);
                     break;
                 case 2:
-                    System.out.print("Enter your new username: ");
-                    String newUsername = scanner.next();
-                    changeUsername(currentUsername, newUsername);
-                    break;
-                case 3:
-                    System.out.println("Returning to the main menu.");
-                    break;
+                    System.out.println("Exiting...");
+                    return;
                 default:
                     System.out.println("Invalid choice. Please try again.");
             }
+        }
+    }
+
+    private void authenticateUser(Scanner scanner) {
+        System.out.print("Enter your username: ");
+        String username = scanner.nextLine();
+        System.out.print("Enter your password: ");
+        String password = scanner.nextLine();
+
+        if (isValidCredentials(username, password)) {
+            System.out.println("Authentication successful!");
+            displayAccountSettings(scanner, username);
         } else {
-            System.out.println("Invalid username or password. Please try again.");
+            System.out.println("Authentication failed. Type 'exit' to go back to the main menu or press Enter to try again.");
+            String input = scanner.nextLine();
+            if (input.equalsIgnoreCase("exit")) {
+                return;
+            }
+        }
+    }
+
+    private boolean isValidCredentials(String enteredUsername, String enteredPassword) {
+        try {
+            File file = new File("user_data.txt");
+            BufferedReader reader = new BufferedReader(new FileReader(file));
+            String line;
+
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split(",");
+                if (parts.length == 3 && parts[0].equals(enteredUsername) && parts[1].equals(enteredPassword)) {
+                    reader.close();
+                    return true;
+                }
+            }
+
+            reader.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        return false;
+    }
+
+    private void displayAccountSettings(Scanner scanner, String username) {
+        while (true) {
+            System.out.println("==== Account Settings ====");
+            System.out.println("1. Change Username");
+            System.out.println("2. Change Password");
+            System.out.println("3. Change Email");
+            System.out.println("4. Logout");
+            System.out.print("Enter your choice: ");
+
+            int choice = scanner.nextInt();
+            scanner.nextLine();  // Consume the newline character
+
+            switch (choice) {
+                case 1:
+                    changeField(scanner, "username", username);
+                    break;
+                case 2:
+                    changeField(scanner, "password", username);
+                    break;
+                case 3:
+                    changeField(scanner, "email", username);
+                    break;
+                case 4:
+                    System.out.println("Logging out...");
+                    return;
+                default:
+                    System.out.println("Invalid choice. Please try again.");
+            }
+        }
+    }
+
+    private void changeField(Scanner scanner, String fieldToUpdate, String username) {
+        System.out.print("Enter your new " + fieldToUpdate + ": ");
+        String newValue = scanner.nextLine();
+
+        // Read the data.txt file, update the field, and write back
+        updateUserData(username, fieldToUpdate, newValue);
+
+        System.out.println(fieldToUpdate.substring(0, 1).toUpperCase() + fieldToUpdate.substring(1) +
+                " changed successfully!");
+    }
+
+    private void updateUserData(String username, String fieldToUpdate, String newValue) {
+        try {
+            File file = new File("user_data.txt");
+            BufferedReader reader = new BufferedReader(new FileReader(file));
+            String line;
+            StringBuilder updatedContent = new StringBuilder();
+
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split(",");
+                if (parts.length == 3 && parts[0].equals(username)) {
+                    if (fieldToUpdate.equals("username")) {
+                        updatedContent.append(newValue).append(",").append(parts[1]).append(",").append(parts[2]).append("\n");
+                    } else if (fieldToUpdate.equals("password")) {
+                        updatedContent.append(parts[0]).append(",").append(newValue).append(",").append(parts[2]).append("\n");
+                    } else if (fieldToUpdate.equals("email")) {
+                        updatedContent.append(parts[0]).append(",").append(parts[1]).append(",").append(newValue).append("\n");
+                    }
+                } else {
+                    updatedContent.append(line).append("\n");
+                }
+            }
+
+            reader.close();
+
+            // Write the updated content back to the file
+            BufferedWriter writer = new BufferedWriter(new FileWriter(file));
+            writer.write(updatedContent.toString());
+            writer.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 }

@@ -48,7 +48,8 @@ public class ProductSearchApp {
                     }
                     break;
                 case 5:
-                    AccountSettings.displayAccountSettings(scanner);
+                    AccountSettings accountSettings = new AccountSettings();
+                    accountSettings.runAccountSettings();
                     break;
                 case 6:
                     System.out.println("Exiting the application. Goodbye!");
