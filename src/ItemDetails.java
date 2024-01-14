@@ -2,7 +2,7 @@ import java.util.*;
 import java.io.*;
 
 public class ItemDetails{
-    public static void main(String[] args) {
+    public static void executeItemDetails() {
         String lookupItemFilePath = "resources/lookup_item_clean.csv";
         String lookupPremiseFilePath = "resources/lookup_premise_clean.csv";
         String priceCatcherFilePath = "resources/pricecatcher_2023-08.csv";
@@ -12,69 +12,68 @@ public class ItemDetails{
         List<LookupPremise> lookupPremises = csvReader.readLookupPremiseCSV(lookupPremiseFilePath);
         List<PriceCatcher> priceCatchers = csvReader.readPriceCatcherCSV(priceCatcherFilePath);
 
-        //assume selected item
+        // assume selected item
         LookupItem selecteditem = findItemByName(lookupItems, "CILI AKAR HIJAU");
 
-        //Objects for each app
-
+        // Objects for each app
         if (selecteditem != null) {
             Scanner scanner = new Scanner(System.in);
             boolean exit = false;
 
-        while (!exit) {
-            System.out.println("Selected " + selecteditem.getItem());
-            System.out.println("Select actions:");
-            System.out.println("1. View item details");
-            System.out.println("2. Modify item details");
-            System.out.println("3. View top 5 cheapest seller");
-            System.out.println("4. View price trend");
-            System.out.println("5. Add to shopping cart");
-            System.out.println("6. Exit");
+            while (!exit) {
+                System.out.println("Selected " + selecteditem.getItem());
+                System.out.println("Select actions:");
+                System.out.println("1. View item details");
+                System.out.println("2. Modify item details");
+                System.out.println("3. View top 5 cheapest seller");
+                System.out.println("4. View price trend");
+                System.out.println("5. Add to shopping cart");
+                System.out.println("6. Exit");
 
-            int choice = scanner.nextInt();
-            scanner.nextLine(); 
+                int choice = scanner.nextInt();
+                scanner.nextLine();
 
-            switch (choice) {
-                case 1:
-                    viewItemDetails(selecteditem);
-                    break;
-                case 2:
-                    modifyItemDetails(selecteditem);
-                    break;
-                case 3:
-                    Cheapest(selecteditem);
-                    break;
-                case 4:
-                    AveragePrices averagePrices = new AveragePrices();
-                    averagePrices.calculateAveragePrices(lookupItems, priceCatchers);
-                    break;
-                case 5:
-                    ShoppingCart shoppingCart = new ShoppingCart();
-                    shoppingCart.addToCart(selecteditem.getItem());
-                    shoppingCart.displayInnerSCMenu();
-                    
-                    int choiceSCMenu = scanner.nextInt();
+                switch (choice) {
+                    case 1:
+                        viewItemDetails(selecteditem);
+                        break;
+                    case 2:
+                        modifyItemDetails(selecteditem);
+                        break;
+                    case 3:
+                        Cheapest(selecteditem);
+                        break;
+                    case 4:
+                        AveragePrices averagePrices = new AveragePrices();
+                        averagePrices.calculateAveragePrices(lookupItems, priceCatchers);
+                        break;
+                    case 5:
+                        ShoppingCart shoppingCart = new ShoppingCart();
+                        shoppingCart.addToCart(selecteditem.getItem());
+                        shoppingCart.displayInnerSCMenu();
 
-                    while(choiceSCMenu!=1 && choiceSCMenu!=2){
-                        if (choiceSCMenu==1){
+                        int choiceSCMenu = scanner.nextInt();
 
-                        } else if (choiceSCMenu==2) {
-
-                        } else {
-                            System.out.println("Invalid choice");
-                            shoppingCart.displayInnerSCMenu();
+                        while (choiceSCMenu != 1 && choiceSCMenu != 2) {
+                            if (choiceSCMenu == 1) {
+                                // Handle option 1
+                            } else if (choiceSCMenu == 2) {
+                                // Handle option 2
+                            } else {
+                                System.out.println("Invalid choice");
+                                shoppingCart.displayInnerSCMenu();
+                            }
                         }
-                    }
 
-                    break;
-                case 6:
-                    exit = true;
-                    break;
-                default:
-                    System.out.println("Invalid choice. Please try again.");
-                    break;
+                        break;
+                    case 6:
+                        exit = true;
+                        break;
+                    default:
+                        System.out.println("Invalid choice. Please try again.");
+                        break;
+                }
             }
-        }
         } else {
             System.out.println("Selected item not found.");
         }

@@ -5,5 +5,7 @@ public class Main {
 		IDandPasswords idandPasswords = new IDandPasswords();		
 		LoginPage loginPage = new LoginPage(idandPasswords.getLoginInfo());
 
+		ItemDetails.executeItemDetails();
+
 	}
 }
