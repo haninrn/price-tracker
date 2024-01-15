@@ -62,8 +62,16 @@ public class ItemGroupGUI extends JFrame {
     public static void ImportData(String fileName, Map<String, List<String>> categories) {
         try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
             String line;
+            boolean isFirstLine = true;
+
             while ((line = br.readLine()) != null) {
-                String[] parts = line.split(",");
+
+                if (isFirstLine) {
+                    isFirstLine = false;
+                    continue;
+                }
+
+                String[] parts = customSplit(line);
                 String itemGroup = parts[3].trim();
                 String itemCategory = parts[4].trim();
                 categories.computeIfAbsent(itemGroup, k -> new ArrayList<>()).add(itemCategory);
@@ -72,4 +80,29 @@ public class ItemGroupGUI extends JFrame {
             e.printStackTrace();
         }
     }
+
+    private static String[] customSplit(String line) {
+        List<String> result = new ArrayList<>();
+        boolean insideQuotes = false;
+        StringBuilder currentPart = new StringBuilder();
+
+        for (char c : line.toCharArray()) {
+            if (c == ',' && !insideQuotes) {
+                result.add(currentPart.toString().trim());
+                currentPart.setLength(0); // clear the current part
+            } else if (c == '"') {
+                insideQuotes = !insideQuotes;
+            } else {
+                currentPart.append(c);
+            }
+        }
+
+        // add the last part
+        result.add(currentPart.toString().trim());
+
+        return result.toArray(new String[0]);
+    }
 }
+
+    
+
