@@ -1,28 +1,34 @@
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.List; // Add this line
+import java.util.HashMap;
+import java.util.Map;
+import javax.swing.*;
+
 
 import javax.swing.*;
 
 public class WelcomePage implements ActionListener {
 
-    ItemSearchGUI itemSearchGUI;
-
     JFrame frame = new JFrame();
     JLabel welcomeLabel = new JLabel("Hello!");
     JButton nextButton = new JButton("Next");
+    JButton backButton = new JButton("Back"); // Add a back button
 
     WelcomePage(String userID) {
-
         welcomeLabel.setBounds(0, 0, 200, 35);
         welcomeLabel.setFont(new Font(null, Font.PLAIN, 25));
         welcomeLabel.setText("Hello " + userID);
 
         nextButton.setBounds(50, 100, 80, 25);
+        backButton.setBounds(150, 100, 80, 25); // Set the position of the back button
 
         nextButton.addActionListener(this);
+        backButton.addActionListener(this); // Add ActionListener to the back button
 
         frame.add(nextButton);
+        frame.add(backButton); // Add the back button to the frame
         frame.add(welcomeLabel);
 
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -32,12 +38,15 @@ public class WelcomePage implements ActionListener {
     }
 
     @Override
-public void actionPerformed(ActionEvent e) {
-    if (e.getSource() == nextButton) {
-        frame.dispose();
-        showMenuOptions();
+    public void actionPerformed(ActionEvent e) {
+        if (e.getSource() == nextButton) {
+            frame.dispose();
+            showMenuOptions();
+        } else if (e.getSource() == backButton) {
+            frame.dispose();
+            // Implement logic to go back to the previous page (if needed)
+        }
     }
-}
 
     private void showMenuOptions() {
         String[] options = { "Import Data", "Browse by Categories", "Search for a Product", "View Shopping Cart",
@@ -49,28 +58,48 @@ public void actionPerformed(ActionEvent e) {
 
         switch (choice) {
             case 0:
-            //import data funct
-                // ProductSearchApp.ImportData("../resources/lookup_item_clean.csv");
+                SwingUtilities.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        new ImportCSVGUI();
+                    }
+                });
                 break;
             case 1:
-                // Browse by Categories
-                // Add logic to handle Browse by Categories
+                Map<String, List<String>> categories = new HashMap<>();
+                ItemGroupGUI.ImportData("resources/lookup_item_clean.csv", categories);
+                //GUI display lorh
+                SwingUtilities.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        new ItemGroupGUI(categories);
+                    }
+                });
                 break;
             case 2:
-                // Search for a Product
-                // Add logic to handle Search for a Product
-                if (itemSearchGUI == null) {
-                    itemSearchGUI = new ItemSearchGUI();
-                    itemSearchGUI.setVisible(true);
-                }
+                SwingUtilities.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        new ItemSearchGUI().setVisible(true);
+                    }
+                });
                 break;
             case 3:
-                // View Shopping Cart
-                // Add logic to handle View Shopping Cart
+                SwingUtilities.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        ShoppingCart shoppingCart = new ShoppingCart();
+                        new ShoppingCartGUI(shoppingCart).setVisible(true);
+                    }
+                });
                 break;
             case 4:
-                // Account Settings
-                // AccountSettings.displayAccountSettings(null);
+                SwingUtilities.invokeLater(new Runnable() {
+                    @Override
+                    public void run() {
+                        new AccountSettingsGUI().setVisible(true);
+                    }
+                });
                 break;
             case 5:
                 // Exit
@@ -86,8 +115,4 @@ public void actionPerformed(ActionEvent e) {
         return "1. Import Data\n" + "2. Browse by Categories\n" + "3. Search for a Product\n" + "4. View Shopping Cart\n"
                 + "5. Account Settings\n" + "6. Exit\n\n" + "Enter your choice (1/2/3/4/5/6) :";
     }
-
-    // public static void main(String[] args) {
-    //     SwingUtilities.invokeLater(() -> new WelcomePage("User123"));
-    // }
 }

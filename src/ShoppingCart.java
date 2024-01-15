@@ -99,6 +99,8 @@ public class ShoppingCart {
 
     }
 
-    
+    public Map<String, Integer> getShoppingCart() {
+        return shoppingCart;
+    }
 
 }

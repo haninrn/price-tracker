@@ -10,13 +10,12 @@ import java.util.Scanner;
 public class ProductSearchApp {
     private static Map<String, List<String>> categories = new HashMap<>();
 
-    public static void main(String[] args) {
+    public static void productSearchAppMainMenu() {
 
         Scanner scanner = new Scanner(System.in);
         int choice;
 
         do {
-            displayMainMenu();
             System.out.print("Enter your choice (1/2/3/4/5/6): ");
             choice = scanner.nextInt();
 
@@ -71,16 +70,6 @@ public class ProductSearchApp {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    public static void displayMainMenu() {
-        System.out.println("Welcome to Product Search and Selection");
-        System.out.println("1. Import Data");
-        System.out.println("2. Browse by Categories");
-        System.out.println("3. Search for a Product");
-        System.out.println("4. View Shopping Cart");
-        System.out.println("5. Account Settings");
-        System.out.println("6. Exit");
     }
 
     public static void browseByCategories(Scanner scanner) {

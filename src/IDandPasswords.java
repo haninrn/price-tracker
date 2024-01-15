@@ -5,9 +5,8 @@ public class IDandPasswords {
 
 	HashMap<String,String> logininfo = new HashMap<String,String>();
 	
-	IDandPasswords(){ //use sql to get mutiple data
-		// Read data from a file and populate the HashMap
-        loadDataFromFile("../user_data.txt"); 
+	IDandPasswords(){
+        loadDataFromFile("user_data.txt");
 	}
 
 	private void loadDataFromFile(String fileName) {
@@ -33,7 +32,7 @@ public class IDandPasswords {
 
     public HashMap<String, String> getLoginInfo() {
         return logininfo;
-    }     
+    }
 }
 
 
