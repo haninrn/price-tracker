@@ -7,8 +7,10 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class ItemGroupGUI extends JFrame {
     private JComboBox<String> itemGroupComboBox;
@@ -46,18 +48,25 @@ public class ItemGroupGUI extends JFrame {
     }
 
     private void displayItemCategories() {
-        String selectedGroup = (String) itemGroupComboBox.getSelectedItem();
-        if (selectedGroup != null) {
-            List<String> itemCategories = categories.get(selectedGroup);
-            if (itemCategories != null) {
-                StringBuilder categoriesText = new StringBuilder();
-                for (String category : itemCategories) {
+    String selectedGroup = (String) itemGroupComboBox.getSelectedItem();
+    if (selectedGroup != null) {
+        List<String> itemCategories = categories.get(selectedGroup);
+        if (itemCategories != null) {
+            Set<String> displayedItems = new HashSet<>();
+            StringBuilder categoriesText = new StringBuilder();
+            
+            for (String category : itemCategories) {
+                // Check if the item is not already displayed
+                if (!displayedItems.contains(category)) {
                     categoriesText.append(category).append("\n");
+                    displayedItems.add(category);
                 }
-                itemCategoryTextArea.setText(categoriesText.toString());
             }
+            
+            itemCategoryTextArea.setText(categoriesText.toString());
         }
     }
+}
 
     public static void ImportData(String fileName, Map<String, List<String>> categories) {
         try (BufferedReader br = new BufferedReader(new FileReader(fileName))) {
