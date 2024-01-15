@@ -7,6 +7,10 @@ public class AccountSettings {
     private static Map<String, String> userAccounts = new HashMap<>();
     private static final String DATA_FILE = "user_data.txt";
 
+    static {
+        loadUserAccounts();
+    }
+
     public static void loadUserAccounts() {
         try (BufferedReader buffer = new BufferedReader(new FileReader(DATA_FILE))) {
             String line;
@@ -21,8 +25,8 @@ public class AccountSettings {
         }
     }
 
-    public static void saveUserAccounts() {
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter("../user_data.txt"))) {
+    private static void saveUserAccounts() {
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(DATA_FILE))) {
             for (Map.Entry<String, String> entry : userAccounts.entrySet()) {
                 bw.write(entry.getKey() + "," + entry.getValue());
                 bw.newLine();
@@ -90,4 +94,44 @@ public class AccountSettings {
             System.out.println("Invalid username or password. Please try again.");
         }
     }
+
+    public boolean authenticateUser(String username, String password) {
+        loadUserAccounts();
+    
+        if (userAccounts.containsKey(username) && userAccounts.get(username).equals(password)) {
+            return true; // Authentication successful
+        } else {
+            return false; // Authentication failed
+        }
+    }
+    
+    public void modifyUserDetails(String currentUsername, String currentPassword, String newUsername, String newPassword) {
+        loadUserAccounts();
+
+        if (userAccounts.containsKey(currentUsername) && userAccounts.get(currentUsername).equals(currentPassword)) {
+            // Authentication successful
+            if (!newUsername.equals(currentUsername)) {
+                // Change username
+                if (!userAccounts.containsKey(newUsername)) {
+                    String password = userAccounts.remove(currentUsername);
+                    userAccounts.put(newUsername, password);
+                } else {
+                    System.out.println("Username already exists. Please choose a different username.");
+                    return;
+                }
+            }
+
+            if (!newPassword.equals(currentPassword)) {
+                // Change password
+                userAccounts.put(currentUsername, newPassword);
+            }
+
+            saveUserAccounts();
+            System.out.println("Details modified successfully.");
+
+        } else {
+            System.out.println("Invalid username or password. Please try again.");
+        }
+    }
+    
 }

@@ -2,14 +2,29 @@ import java.io.*;
 import java.time.LocalDate;
 import java.util.*;
 
-public class CSVReader {
+public class CSVReader implements AutoCloseable {
+
+    public BufferedReader br;
+
+    public CSVReader() {
+        //wtf am i supposed to do here ;-;
+    }
+
+    public CSVReader(FileReader fileReader) {
+        this.br = new BufferedReader(fileReader);
+    }
 
     public List<LookupItem> readLookupItemCSV(String filePath) {
         List<LookupItem> lookupItems = new ArrayList<>();
         String line;
         String cvsSplitBy = ",";
 
-        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+        try {
+            // If br is not initialized, create a new BufferedReader
+            if (br == null) {
+                br = new BufferedReader(new FileReader(filePath));
+            }
+
             // Skip header
             br.readLine();
 
@@ -24,20 +39,26 @@ public class CSVReader {
 
         return lookupItems;
     }
+
     public List<LookupPremise> readLookupPremiseCSV(String filePath) {
         List<LookupPremise> lookupPremises = new ArrayList<>();
         String line;
         String cvsSplitBy = ",";
         boolean inMultilineEntry = false;
         StringBuilder multilineEntry = new StringBuilder();
-    
-        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+
+        try {
+            // If br is not initialized, create a new BufferedReader
+            if (br == null) {
+                br = new BufferedReader(new FileReader(filePath));
+            }
+
             // Skip header
             br.readLine();
-    
+
             while ((line = br.readLine()) != null) {
                 String[] data = line.split(cvsSplitBy);
-    
+
                 if (data.length >= 6) {
                     if (inMultilineEntry) {
                         multilineEntry.append(" ").append(data[2]);
@@ -49,7 +70,7 @@ public class CSVReader {
                             continue;  // Continue reading the next line for the multiline entry
                         }
                     }
-    
+
                     if (data[2].startsWith("\"") && !data[2].endsWith("\"")) {
                         // This line starts a multiline entry in the "address" column
                         inMultilineEntry = true;
@@ -65,18 +86,21 @@ public class CSVReader {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    
+
         return lookupPremises;
     }
-    
-    
-    
+
     public List<PriceCatcher> readPriceCatcherCSV(String filePath) {
         List<PriceCatcher> priceCatchers = new ArrayList<>();
         String line;
         String cvsSplitBy = ",";
 
-        try (BufferedReader br = new BufferedReader(new FileReader(filePath))) {
+        try {
+            // If br is not initialized, create a new BufferedReader
+            if (br == null) {
+                br = new BufferedReader(new FileReader(filePath));
+            }
+
             // Skip header
             br.readLine();
 
@@ -95,6 +119,25 @@ public class CSVReader {
         }
 
         return priceCatchers;
+    }
+
+    public List<String[]> readAll() throws IOException {
+        List<String[]> records = new ArrayList<>();
+        String line;
+        
+        while ((line = br.readLine()) != null) {
+            String[] record = line.split(",");
+            records.add(record);
+        }
+        
+        return records;
+    }
+
+    @Override
+    public void close() throws IOException {
+        if (br != null) {
+            br.close();
+        }
     }
 
     // Similar methods for reading LookupPremise and PriceCatcher CSV files
