@@ -3,21 +3,19 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
-import java.io.ByteArrayOutputStream;
 import java.io.FileReader;
 import java.io.IOException;
-import java.io.PrintStream;
+import java.util.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Scanner;
 
 public class ItemSearchGUI extends JFrame {
     private static Map<String, List<String>> categories = new HashMap<>();
     private JTextField searchField;
     private JTextArea resultTextArea;
-    private JTextField choiceTextField;  
+    private JTextField choiceTextField;
     private JTextArea actionsTextArea;
 
     public ItemSearchGUI() {
@@ -84,33 +82,49 @@ public class ItemSearchGUI extends JFrame {
     public void performSearch(String searchText) {
         // Convert the search text to uppercase
         String searchUpper = searchText.toUpperCase();
-    
+
         ImportData("resources/lookup_item_clean.csv");
         SearchForProduct.setSearchData(categories);
-    
-        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        PrintStream ps = new PrintStream(baos);
-        PrintStream old = System.out;
-        System.setOut(ps);
-    
-        Scanner scanner = new Scanner(searchUpper);
-        // Convert each category to uppercase for case-insensitive comparison
-        categories.entrySet().forEach(entry -> {
-            entry.setValue(entry.getValue().stream()
-                    .map(String::toUpperCase)
-                    .toList());
-        });
-    
-        SearchForProduct.searchForProduct(scanner);
-    
-        resultTextArea.setText(baos.toString());
-    
-        System.out.flush();
-        System.setOut(old);
-    
+
+        List<String> filteredItems = searchItemsWithKeywords(searchUpper, categories);
+        updateResultTextArea(filteredItems);
+
         handleUserChoice();
     }
-    
+
+    private List<String> searchItemsWithKeywords(String keywords, Map<String, List<String>> items) {
+        List<String> filteredItems = new ArrayList<>();
+
+        items.forEach((category, itemList) -> {
+            itemList.forEach(item -> {
+                // Case-insensitive check for each keyword in the item
+                if (containsAllKeywords(item, keywords)) {
+                    filteredItems.add(category + " - " + item);
+                }
+            });
+        });
+
+        return filteredItems;
+    }
+
+    private boolean containsAllKeywords(String item, String keywords) {
+        String[] keywordArray = keywords.split("\\s+");
+        for (String keyword : keywordArray) {
+            if (!item.toUpperCase().contains(keyword.toUpperCase())) {
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private void updateResultTextArea(List<String> filteredItems) {
+        StringBuilder resultText = new StringBuilder();
+        for (String item : filteredItems) {
+            resultText.append(item).append("\n");
+        }
+        resultTextArea.setText(resultText.toString());
+    }
+
     private void handleUserChoice() {
         String userChoiceText = choiceTextField.getText();
         try {
@@ -121,7 +135,7 @@ public class ItemSearchGUI extends JFrame {
         }
     }
 
-    private void processUserChoice(int userChoice) {
+    protected void processUserChoice(int userChoice) {
         List<String> foundProducts = new ArrayList<>(resultTextArea.getLineCount());
         Scanner scanner = new Scanner(resultTextArea.getText());
 
@@ -157,6 +171,4 @@ public class ItemSearchGUI extends JFrame {
             e.printStackTrace();
         }
     }
-
-    
 }
