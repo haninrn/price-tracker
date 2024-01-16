@@ -294,7 +294,8 @@ public class ItemDetails {
     private static String findPremiseAddress(String premiseCode, List<String[]> premiseDetailsList) {
         for (String[] details : premiseDetailsList) {
             if (premiseCode.equals(details[0])) {
-                return details[1]+ ", " + details[2] + ", " + details[3] + ", " + details[4] + ", " + details[5];
+                String[] parsedDetails = customSplit(details[1] + ", " + details[2]);
+                return parsedDetails[0] + ", " + parsedDetails[1];
             }
         }
         return "Address not found";
@@ -363,6 +364,28 @@ public class ItemDetails {
 
         System.out.println("Cheapest Seller for the entire cart:");
         cart.viewCheapestSellerForCart();
+    }
+
+    private static String[] customSplit(String line) {
+        List<String> result = new ArrayList<>();
+        boolean insideQuotes = false;
+        StringBuilder currentPart = new StringBuilder();
+
+        for (char c : line.toCharArray()) {
+            if (c == ',' && !insideQuotes) {
+                result.add(currentPart.toString().trim());
+                currentPart.setLength(0); // clear the current part
+            } else if (c == '"') {
+                insideQuotes = !insideQuotes;
+            } else {
+                currentPart.append(c);
+            }
+        }
+
+        // add the last part
+        result.add(currentPart.toString().trim());
+
+        return result.toArray(new String[0]);
     }
     
 }
