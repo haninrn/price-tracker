@@ -7,11 +7,7 @@ public class AccountSettings {
     private static Map<String, String> userAccounts = new HashMap<>();
     private static final String DATA_FILE = "user_data.txt";
 
-    static {
-        loadUserAccounts();
-    }
-
-    public static void loadUserAccounts() {
+    public void loadUserAccounts() {
         try (BufferedReader buffer = new BufferedReader(new FileReader(DATA_FILE))) {
             String line;
             while ((line = buffer.readLine()) != null) {

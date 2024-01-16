@@ -1,22 +1,27 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.*;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 public class ItemSearchGUI extends JFrame {
     private static Map<String, List<String>> categories = new HashMap<>();
-    private JTextField searchField;
-    private JTextArea resultTextArea;
-    private JTextField choiceTextField;
+    private JList<String> resultList;
+    private DefaultListModel<String> resultListModel;
     private JTextArea actionsTextArea;
+    private JTextField choiceTextField;
+    private JTextArea resultTextArea;
+
+    private JButton viewDetailsButton;
+    private JButton modifyDetailsButton;
+    private JButton viewCheapestSellerButton;
+    private JButton viewPriceTrendButton;
+    private JButton addToCartButton;
+
+
 
     public ItemSearchGUI() {
         setTitle("Item Search");
@@ -27,14 +32,15 @@ public class ItemSearchGUI extends JFrame {
         panel.setLayout(new FlowLayout());
 
         JLabel searchLabel = new JLabel("Search Item:");
-        searchField = new JTextField(20);
+        JTextField searchField = new JTextField(20);
         JButton searchButton = new JButton("Search");
 
-        resultTextArea = new JTextArea(10, 30);
-        resultTextArea.setEditable(false);
+        resultListModel = new DefaultListModel<>();
+        resultList = new JList<>(resultListModel);
+        resultList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
-        choiceTextField = new JTextField(5);
-        JButton chooseButton = new JButton("Choose");
+        JScrollPane resultScrollPane = new JScrollPane(resultList);
+        resultScrollPane.setPreferredSize(new Dimension(350, 200));
 
         actionsTextArea = new JTextArea(5, 30);
         actionsTextArea.setEditable(false);
@@ -47,10 +53,14 @@ public class ItemSearchGUI extends JFrame {
             }
         });
 
-        chooseButton.addActionListener(new ActionListener() {
+        resultList.addMouseListener(new MouseAdapter() {
             @Override
-            public void actionPerformed(ActionEvent e) {
-                handleUserChoice();
+            public void mouseClicked(MouseEvent e) {
+                if (e.getClickCount() == 1) {
+                    int index = resultList.locationToIndex(e.getPoint());
+                    processUserChoice(index + 1);
+
+                }
             }
         });
 
@@ -59,24 +69,58 @@ public class ItemSearchGUI extends JFrame {
         panel.add(searchButton);
 
         add(panel, BorderLayout.NORTH);
-        add(new JScrollPane(resultTextArea), BorderLayout.CENTER);
-
-        JPanel choicePanel = new JPanel();
-        choicePanel.add(new JLabel("Enter choice:"));
-        choicePanel.add(choiceTextField);
-        choicePanel.add(chooseButton);
+        add(resultScrollPane, BorderLayout.CENTER);
 
         JPanel actionsPanel = new JPanel();
         actionsPanel.add(new JLabel("Select actions:"));
         actionsPanel.add(new JScrollPane(actionsTextArea));
 
         JPanel bottomPanel = new JPanel(new GridLayout(2, 1));
-        bottomPanel.add(choicePanel);
         bottomPanel.add(actionsPanel);
+
+        // Adding image buttons with hover text
+        bottomPanel.add(createImageButtonPanel());
 
         add(bottomPanel, BorderLayout.SOUTH);
 
         setVisible(true);
+    }
+
+    private JPanel createImageButtonPanel() {
+        JPanel buttonPanel = new JPanel(new FlowLayout());
+
+        buttonPanel.add(createHoverButton("View Details", "view_details.png", "View item details"));
+        buttonPanel.add(createHoverButton("Modify Details", "modify_details.png", "Modify item details"));
+        buttonPanel.add(createHoverButton("View Cheapest Seller", "view_cheapest_seller.png", "View top 5 cheapest seller"));
+        buttonPanel.add(createHoverButton("View Price Trend", "view_price_trend.png", "View price trend"));
+        buttonPanel.add(createHoverButton("Add to Cart", "add_to_cart.png", "Add to shopping cart"));
+
+        return buttonPanel;
+    }
+
+    private JButton createHoverButton(String buttonText, String iconFilename, String hoverText) {
+        JButton button = new JButton(buttonText, new ImageIcon(iconFilename));
+        button.setToolTipText(hoverText);
+
+        button.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseEntered(java.awt.event.MouseEvent evt) {
+                actionsTextArea.setText(hoverText);
+            }
+
+            public void mouseExited(java.awt.event.MouseEvent evt) {
+                actionsTextArea.setText("");
+            }
+        });
+
+        button.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Handle button click action
+                actionsTextArea.setText("Button clicked: " + buttonText);
+            }
+        });
+
+        return button;
     }
 
     public void performSearch(String searchText) {
@@ -86,10 +130,19 @@ public class ItemSearchGUI extends JFrame {
         ImportData("resources/lookup_item_clean.csv");
         SearchForProduct.setSearchData(categories);
 
+        // Clear previous results
+        resultListModel.clear();
+
         List<String> filteredItems = searchItemsWithKeywords(searchUpper, categories);
-        updateResultTextArea(filteredItems);
+        updateResultList(filteredItems);
 
         handleUserChoice();
+    }
+
+    private void updateResultList(List<String> filteredItems) {
+        for (String item : filteredItems) {
+            resultListModel.addElement(item);
+        }
     }
 
     private List<String> searchItemsWithKeywords(String keywords, Map<String, List<String>> items) {
@@ -152,8 +205,14 @@ public class ItemSearchGUI extends JFrame {
                     "3. View top 5 cheapest seller\n" +
                     "4. View price trend\n" +
                     "5. Add to shopping cart");
+
+            // Set visibility of buttons based on user's choice
+            setButtonsVisibility(true);
         } else {
             actionsTextArea.setText("Invalid choice. Please try again.");
+
+            // Hide buttons if the choice is invalid
+            setButtonsVisibility(false);
         }
     }
 
@@ -171,4 +230,13 @@ public class ItemSearchGUI extends JFrame {
             e.printStackTrace();
         }
     }
+
+    private void setButtonsVisibility(boolean visible) {
+        viewDetailsButton.setVisible(visible);
+        modifyDetailsButton.setVisible(visible);
+        viewCheapestSellerButton.setVisible(visible);
+        viewPriceTrendButton.setVisible(visible);
+        addToCartButton.setVisible(visible);
+    }
+    
 }
