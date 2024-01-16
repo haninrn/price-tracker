@@ -117,7 +117,7 @@ public class ItemDetails {
         System.out.println("Item details modified successfully.");
     }
 
-    private static LookupItem findItemByName(List<LookupItem> lookupItems, String itemName) {
+    public static LookupItem findItemByName(List<LookupItem> lookupItems, String itemName) {
         for (LookupItem item : lookupItems) {
             if (item.getItem().equals(itemName)) {
                 return item;
@@ -136,87 +136,6 @@ public class ItemDetails {
        
         findCheapestPrices(itemName,itemsFilePath,pricesFilePath,premiseFilePath);
     }
-
-    // public static void findCheapestPrices(String itemName, String itemsFilePath, String pricesFilePath, String premiseFilePath) {
-    //     List<String[]> cheapestPrices = new ArrayList<>();
-
-    //     try (BufferedReader brItems = new BufferedReader(new FileReader(itemsFilePath));
-    //          BufferedReader brPremise = new BufferedReader(new FileReader(premiseFilePath));
-    //          BufferedReader brPrices = new BufferedReader(new FileReader(pricesFilePath))) {
-
-    //         String line;
-    //         List<String[]> itemCodeMap = new ArrayList<>();
-    //         while ((line = brItems.readLine()) != null) {
-    //             String[] parts = line.split(",");
-    //             if (parts.length >= 4) {
-    //                 itemCodeMap.add(parts);
-
-    //                 // double premiseCode = Double.parseDouble(parts[1].trim());
-    //                 // parts[1] = String.valueOf(premiseCode); // Convert back to string if needed
-    //                 // itemCodeMap.add(parts);
-    //             }
-    //         }
-
-    //         List<String[]> premiseDetailsList = new ArrayList<>();
-    //         while ((line = brPremise.readLine()) != null) {
-    //             String[] parts = line.split(",");
-    //             if (parts.length >= 6) {
-    //                 premiseDetailsList.add(parts);
-    //             }
-    //         }
-    //         List<String[]> priceList = new ArrayList<>();
-    //         while ((line = brPrices.readLine()) != null) {
-    //             String[] parts = line.split(",");
-    //             if (parts.length >= 4) {
-    //                 priceList.add(parts);
-    //             }
-    //         }
-    //         for (String[] price : priceList) {
-    //             String itemCode = price[2].trim();
-    //             for (String[] item : itemCodeMap) {
-    //                 if (itemName.equals(item[1].trim()) && itemCode.equals(item[0].trim())) {
-    //                     if (!containsPrice(cheapestPrices, price[3])) {
-    //                         cheapestPrices.add(price);
-    //                     }
-    //                 }
-    //             }
-    //         }
-
-    //         cheapestPrices.sort(Comparator.comparingDouble(a -> Double.parseDouble(a[3])));
-
-    //         if (cheapestPrices.isEmpty()) {
-    //             System.out.println("No prices found for the item.");
-    //         } else {
-    //             // Retrieve itemunit based on the first item found in cheapestPrices
-    //             String firstItemCode = cheapestPrices.get(0)[2];
-    //             String itemUnit = getItemUnit(firstItemCode, itemCodeMap);
-
-    //             System.out.println("Top 5 Cheapest Sellers for " + itemName + " (" + itemUnit + ")\n");
-    //             int count = 0;
-    //             char k = 'A';
-    //             for (String[] price : cheapestPrices) {
-    //                 if (count >= 5) {
-    //                     break;
-    //                 }
-    //                 String premiseCode = price[1].endsWith(".0") ? price[1] : price[1] + ".0";
-    //                 String premiseAddress = findPremiseAddress(premiseCode, premiseDetailsList);
-    //                 System.out.println(count + 1 + ". Retailer " + k + "\n" +                          
-    //                         "   Premise Code: " + premiseCode + "\n" +
-    //                         "   Price: RM" + price[3] + "\n" +
-    //                         "   Address: " + premiseAddress
-    //                 );
-    //                 System.out.println();
-    //                 k++;
-    //                 count++;
-    //             }
-                
-                
-    //         }
-
-    //     } catch (IOException | NumberFormatException e) {
-    //         e.printStackTrace();
-    //     }
-    // }
 
     public static List<String[]> findCheapestPrices(String itemName, String itemsFilePath, String pricesFilePath, String premiseFilePath) {
         List<String[]> cheapestPrices = new ArrayList<>();
